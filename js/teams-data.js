@@ -2,7 +2,18 @@ window.RRFC_TEAMS = [
   {
     name: "Florida Gators",
     season: 11,
-    roster: [],
+    roster: [
+      "Unc Mike",
+      "Yin",
+      "Zay",
+      "Joker",
+      "Trey/Flock",
+      "Yilo",
+      "Mar",
+      "Spoon",
+      "Vipbaby",
+      "Fazy",
+    ],
     colors: { primary: "#FA4616", secondary: "#0021A5", accent: "#FA4616" },
   },
   {
@@ -14,8 +25,18 @@ window.RRFC_TEAMS = [
   {
     name: "Oregon Ducks",
     season: 11,
-    roster: [],
-    colors: { primary: "#154733", secondary: "#FEE123", accent: "#FEE123" },
+    roster: [
+      "Zir",
+      "Kakarot",
+      "Kye",
+      "Bilxa",
+      "Xpgzz",
+      "Bear",
+      "Slim",
+      "BabyTray",
+      "Zermis",
+    ],
+    colors: { primary: "#FEE123", secondary: "#154733", accent: "#FEE123" },
   },
   {
     name: "Liberty Flames",
@@ -51,7 +72,19 @@ window.RRFC_TEAMS = [
   {
     name: "Michigan Wolverines",
     season: 11,
-    roster: [],
+    roster: [
+      "Kratos",
+      "Purp",
+      "Shark",
+      "Yang",
+      "Icy",
+      "Sojay",
+      "Fhonts",
+      "Straw",
+      "Sasuke",
+      "Malmal",
+      "Elijah",
+    ],
     colors: { primary: "#FFCB05", secondary: "#00274C", accent: "#FFCB05" },
   },
   {
@@ -86,7 +119,16 @@ window.RRFC_TEAMS = [
   {
     name: "Cincinnati Bearcats",
     season: 11,
-    roster: [],
+    roster: [
+      "Kayden",
+      "Nao",
+      "Jay",
+      "MVP",
+      "Mini jr",
+      "Rain",
+      "Nico",
+      "Venus",
+    ],
     colors: { primary: "#E00122", secondary: "#000000", accent: "#FF2A48" },
   },
 ];
@@ -117,10 +159,109 @@ window.RRFC_CHIP_CHAMPIONS = (() => {
   return [...names].sort((a, b) => a.localeCompare(b));
 })();
 
+/** Colors for historic / non-S11 teams (player badges, etc.). */
+window.RRFC_HISTORIC_TEAM_COLORS = {
+  "Oklahoma Sooners": { primary: "#841617", accent: "#C8102E" },
+  "Oklahoma Sooner": { primary: "#841617", accent: "#C8102E" },
+  "Rutgers Scarlett Knights": { primary: "#CC0033", accent: "#E31C3F" },
+  "Rutgers Scarlet Knights": { primary: "#CC0033", accent: "#E31C3F" },
+  "Baltimore Huskies": { primary: "#5C2D91", accent: "#9B59B6" },
+};
+
+window.RRFC_colorsForTeamName = (teamName) => {
+  if (!teamName) return null;
+  const fromS11 = (window.RRFC_TEAMS || []).find(
+    (t) => t.name.toLowerCase() === String(teamName).trim().toLowerCase()
+  );
+  if (fromS11 && fromS11.colors) return fromS11.colors;
+  const historic = window.RRFC_HISTORIC_TEAM_COLORS || {};
+  const key = Object.keys(historic).find(
+    (k) => k.toLowerCase() === String(teamName).trim().toLowerCase()
+  );
+  return key ? historic[key] : null;
+};
+
 window.RRFC_findTeam = (raw) => {
   if (!raw) return null;
   const decoded = decodeURIComponent(raw).trim().toLowerCase();
   return (window.RRFC_TEAMS || []).find((t) => t.name.toLowerCase() === decoded) || null;
+};
+
+window.RRFC_normalizeName = (name) =>
+  String(name || "")
+    .trim()
+    .toLowerCase()
+    .replace(/[^a-z0-9]/g, "");
+
+window.RRFC_findPlayerByName = (name) => {
+  if (!name) return null;
+  try {
+    const target = String(name).trim().toLowerCase();
+    const compact = window.RRFC_normalizeName(name);
+    const players = window.RRFC_PLAYERS || [];
+
+    const byExact = players.find((p) => p.name.toLowerCase() === target);
+    if (byExact) return byExact;
+
+    const byCompact = players.find(
+      (p) => window.RRFC_normalizeName(p.name) === compact
+    );
+    if (byCompact) return byCompact;
+
+    return (
+      players.find((p) =>
+        (p.aliases || []).some((a) => {
+          const alias = String(a).trim().toLowerCase();
+          return alias === target || window.RRFC_normalizeName(a) === compact;
+        })
+      ) || null
+    );
+  } catch {
+    return null;
+  }
+};
+
+window.RRFC_findTeamForPlayer = (name) => {
+  if (!name || !Array.isArray(window.RRFC_TEAMS)) return null;
+  try {
+    const raw = String(name).trim();
+    const rawLower = raw.toLowerCase();
+    const rawCompact = window.RRFC_normalizeName
+      ? window.RRFC_normalizeName(raw)
+      : rawLower.replace(/[^a-z0-9]/g, "");
+    const resolved =
+      (window.RRFC_findPlayerByName && window.RRFC_findPlayerByName(raw)) || null;
+    const resolvedName = resolved ? resolved.name : raw;
+    const resolvedLower = resolvedName.toLowerCase();
+    const resolvedCompact = window.RRFC_normalizeName
+      ? window.RRFC_normalizeName(resolvedName)
+      : resolvedLower.replace(/[^a-z0-9]/g, "");
+
+    for (const team of window.RRFC_TEAMS) {
+      for (const entry of team.roster || []) {
+        const rosterName = String(entry).trim();
+        const rosterLower = rosterName.toLowerCase();
+        if (rosterLower === rawLower || rosterLower === resolvedLower) return team;
+
+        const rosterCompact = window.RRFC_normalizeName
+          ? window.RRFC_normalizeName(rosterName)
+          : rosterLower.replace(/[^a-z0-9]/g, "");
+        if (
+          rosterCompact === rawCompact ||
+          rosterCompact === resolvedCompact
+        ) {
+          return team;
+        }
+
+        const matched =
+          window.RRFC_findPlayerByName && window.RRFC_findPlayerByName(rosterName);
+        if (matched && matched.name.toLowerCase() === resolvedLower) return team;
+      }
+    }
+  } catch {
+    return null;
+  }
+  return null;
 };
 
 window.RRFC_hexToRgb = (hex) => {
@@ -162,7 +303,11 @@ window.RRFC_applyTeamTheme = (team) => {
   root.style.setProperty("--team-row-line", rowLine);
   root.style.setProperty(
     "--team-primary-glow",
-    p ? `rgba(${p.r}, ${p.g}, ${p.b}, 0.28)` : "rgba(212, 160, 23, 0.28)"
+    p ? `rgba(${p.r}, ${p.g}, ${p.b}, 0.35)` : "rgba(212, 160, 23, 0.28)"
+  );
+  root.style.setProperty(
+    "--team-glow-strong",
+    p ? `rgba(${p.r}, ${p.g}, ${p.b}, 0.6)` : "rgba(240, 195, 74, 0.55)"
   );
   root.style.setProperty(
     "--team-secondary-glow",
@@ -176,35 +321,27 @@ window.RRFC_applyTeamTheme = (team) => {
     "--team-row-fill",
     p ? `rgba(${p.r}, ${p.g}, ${p.b}, 0.2)` : "rgba(212, 160, 23, 0.12)"
   );
+
+  // Stripe panel colors for roster rows — middle stays faded/dark like the old rows
+  const panelRgb = lum(s) < 0.08 ? p || { r: 212, g: 160, b: 23 } : s;
+  const endRgb = p || { r: 212, g: 160, b: 23 };
+  root.style.setProperty(
+    "--team-panel",
+    `rgb(${panelRgb.r}, ${panelRgb.g}, ${panelRgb.b})`
+  );
+  root.style.setProperty(
+    "--team-panel-soft",
+    `rgba(${panelRgb.r}, ${panelRgb.g}, ${panelRgb.b}, 0.2)`
+  );
+  root.style.setProperty(
+    "--team-icon-fill",
+    a
+      ? `rgba(${a.r}, ${a.g}, ${a.b}, ${lum(a) > 0.7 ? 0.28 : 0.55})`
+      : `rgba(${endRgb.r}, ${endRgb.g}, ${endRgb.b}, 0.45)`
+  );
+  root.style.setProperty(
+    "--team-stripe-end",
+    `rgba(${endRgb.r}, ${endRgb.g}, ${endRgb.b}, 0.85)`
+  );
   document.body.classList.add("team-themed");
-};
-
-window.RRFC_normalizeName = (name) =>
-  String(name || "")
-    .trim()
-    .toLowerCase()
-    .replace(/[^a-z0-9]/g, "");
-
-window.RRFC_findPlayerByName = (name) => {
-  if (!name) return null;
-  const target = String(name).trim().toLowerCase();
-  const compact = window.RRFC_normalizeName(name);
-  const players = window.RRFC_PLAYERS || [];
-
-  const byExact = players.find((p) => p.name.toLowerCase() === target);
-  if (byExact) return byExact;
-
-  const byCompact = players.find(
-    (p) => window.RRFC_normalizeName(p.name) === compact
-  );
-  if (byCompact) return byCompact;
-
-  return (
-    players.find((p) =>
-      (p.aliases || []).some((a) => {
-        const alias = String(a).trim().toLowerCase();
-        return alias === target || window.RRFC_normalizeName(a) === compact;
-      })
-    ) || null
-  );
 };

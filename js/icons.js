@@ -64,8 +64,9 @@ window.RRFCMedia = (() => {
 
   const resolveUrl = (bucketId, name) => get(bucketId, name) || fileUrl(bucketId, name);
 
-  const resizeToDataUrl = (file, size = 256) =>
+  const resizeToDataUrl = (file, size = 256, options = {}) =>
     new Promise((resolve, reject) => {
+      const fit = options.fit === "cover" ? "cover" : "contain";
       const reader = new FileReader();
       reader.onerror = () => reject(new Error("Could not read file"));
       reader.onload = () => {
@@ -75,14 +76,40 @@ window.RRFCMedia = (() => {
           const canvas = document.createElement("canvas");
           canvas.width = size;
           canvas.height = size;
-          const ctx = canvas.getContext("2d");
-          const scale = Math.max(size / img.width, size / img.height);
+          const ctx = canvas.getContext("2d", { willReadFrequently: true });
+          // Keep transparency — do not fill a background.
+          ctx.clearRect(0, 0, size, size);
+          const scale =
+            fit === "cover"
+              ? Math.max(size / img.width, size / img.height)
+              : Math.min(size / img.width, size / img.height);
           const w = img.width * scale;
           const h = img.height * scale;
-          ctx.fillStyle = "#111";
-          ctx.fillRect(0, 0, size, size);
           ctx.drawImage(img, (size - w) / 2, (size - h) / 2, w, h);
-          resolve(canvas.toDataURL("image/jpeg", 0.9));
+
+          // Punch out near-black studio/backdrop pixels so old black-box uploads clean up.
+          try {
+            const imageData = ctx.getImageData(0, 0, size, size);
+            const { data } = imageData;
+            for (let i = 0; i < data.length; i += 4) {
+              const r = data[i];
+              const g = data[i + 1];
+              const b = data[i + 2];
+              const max = Math.max(r, g, b);
+              const min = Math.min(r, g, b);
+              // Very dark + low color spread = backdrop black/charcoal
+              if (max <= 28 && max - min <= 10) {
+                data[i + 3] = 0;
+              } else if (max <= 42 && max - min <= 8) {
+                data[i + 3] = Math.round(data[i + 3] * ((max - 28) / 14));
+              }
+            }
+            ctx.putImageData(imageData, 0, 0);
+          } catch {
+            /* tainted canvas — keep drawn image as-is */
+          }
+
+          resolve(canvas.toDataURL("image/png"));
         };
         img.src = reader.result;
       };

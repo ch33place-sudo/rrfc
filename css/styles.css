@@ -284,49 +284,78 @@ main {
 }
 
 /* Player profile */
+body.player-profile-page main {
+  min-height: calc(100vh - var(--nav-h) - 5rem);
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  padding-top: 0.35rem;
+  padding-bottom: 2rem;
+}
+
+.player-profile {
+  width: 100%;
+  animation: rise 0.7s ease both;
+}
+
+.player-season {
+  margin: 0 0 1rem;
+  text-align: center;
+  font-family: var(--font-ui);
+  font-weight: 600;
+  font-size: clamp(2.6rem, 8vw, 4.8rem);
+  letter-spacing: 0.28em;
+  padding-left: 0.28em; /* optical center with wide tracking */
+  line-height: 1;
+  text-transform: uppercase;
+  color: var(--team-text, var(--gold-bright));
+  -webkit-text-stroke: 4px #fff;
+  paint-order: stroke fill;
+}
+
 .player-layout {
   display: grid;
-  grid-template-columns: minmax(220px, 340px) 1fr;
+  grid-template-columns: minmax(260px, 400px) 1fr;
   gap: 2.5rem;
-  align-items: center;
-  animation: rise 0.7s ease both;
+  /* Bottom-align avatar line with the OVR box (last item in .player-info). */
+  align-items: end;
+  width: 100%;
+}
+
+.player-profile > .back-link {
+  margin-top: 1.1rem;
 }
 
 .player-avatar {
   position: relative;
-  aspect-ratio: 3 / 4;
-  background:
-    linear-gradient(180deg, transparent 55%, rgba(0, 0, 0, 0.85)),
-    radial-gradient(circle at 50% 30%, rgba(212, 160, 23, 0.15), transparent 55%),
-    var(--bg-soft);
-  border: 1px solid rgba(255, 255, 255, 0.06);
+  width: 100%;
+  margin-top: 0;
+  background: transparent;
+  border: none;
+  border-bottom: 4px solid var(--team-row-line, var(--gold));
   overflow: hidden;
+  line-height: 0;
+  align-self: end;
 }
 
 .player-avatar img {
+  display: block;
   width: 100%;
-  height: 100%;
-  object-fit: cover;
-  object-position: center top;
+  height: auto;
+  mix-blend-mode: lighten;
 }
 
 .avatar-placeholder {
   width: 100%;
-  height: 100%;
+  min-height: 12rem;
   display: grid;
   place-items: center;
   font-family: var(--font-ui);
   letter-spacing: 0.16em;
   text-transform: uppercase;
   color: var(--muted);
-  background:
-    repeating-linear-gradient(
-      -45deg,
-      transparent,
-      transparent 8px,
-      rgba(255, 255, 255, 0.02) 8px,
-      rgba(255, 255, 255, 0.02) 16px
-    );
+  background: transparent;
+  line-height: normal;
 }
 
 .player-info {
@@ -336,14 +365,41 @@ main {
   min-width: 0;
 }
 
-.team-name {
+.team-name,
+.player-team {
   margin: 0;
   font-family: var(--font-ui);
   font-size: 0.95rem;
   font-weight: 600;
-  letter-spacing: 0.22em;
+  letter-spacing: 0.18em;
   text-transform: uppercase;
-  color: var(--gold-bright);
+  color: var(--team-text, var(--gold-bright));
+  width: fit-content;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+}
+
+.player-team a {
+  color: inherit;
+  text-decoration: none;
+}
+
+.player-team a[href]:hover {
+  color: var(--team-accent, var(--gold-bright));
+}
+
+.player-team.is-free-agent,
+.player-team.is-free-agent a {
+  color: var(--muted);
+  pointer-events: none;
+}
+
+.player-team .team-logo-sm {
+  width: 22px !important;
+  height: 22px !important;
+  max-width: 22px !important;
+  max-height: 22px !important;
 }
 
 .player-name-row {
@@ -359,6 +415,22 @@ main {
   font-size: clamp(3.5rem, 10vw, 6.5rem);
   letter-spacing: 0.04em;
   line-height: 0.9;
+}
+
+.player-profile-page .player-name {
+  color: var(--text);
+}
+
+.player-profile-page .back-link a:hover {
+  color: var(--team-text, var(--gold-bright));
+}
+
+body.team-themed.player-profile-page {
+  background:
+    radial-gradient(ellipse 85% 55% at 50% -12%, var(--team-primary-glow), transparent 58%),
+    radial-gradient(ellipse 55% 45% at 100% 100%, var(--team-secondary-glow), transparent 52%),
+    radial-gradient(ellipse 40% 35% at 0% 80%, var(--team-accent-soft), transparent 50%),
+    var(--bg);
 }
 
 .player-meta {
@@ -379,10 +451,18 @@ main {
   text-transform: uppercase;
   font-size: 0.8rem;
   padding: 0.4rem 0.65rem;
-  border: 1px solid var(--line);
+  border: 1px solid var(--team-accent-soft, var(--line));
+  border-color: color-mix(in srgb, var(--team-text, var(--gold)) 45%, transparent);
   background: rgba(0, 0, 0, 0.55);
-  color: var(--gold-bright);
+  color: var(--team-text, var(--gold-bright));
   animation: badge-in 0.6s ease both;
+}
+
+.badge.trophy {
+  border-color: color-mix(in srgb, var(--badge-accent, var(--gold)) 70%, transparent);
+  color: var(--badge-accent, var(--gold-bright));
+  background: color-mix(in srgb, var(--badge-primary, var(--gold)) 22%, rgba(0, 0, 0, 0.72));
+  box-shadow: 0 0 16px color-mix(in srgb, var(--badge-accent, var(--gold)) 28%, transparent);
 }
 
 .badge.trophy::before {
@@ -394,6 +474,10 @@ main {
   display: flex;
   flex-wrap: wrap;
   gap: 0.5rem;
+}
+
+.badge-row:empty {
+  display: none;
 }
 
 .badge.rank {
@@ -421,9 +505,13 @@ main {
   display: grid;
   place-content: center;
   text-align: center;
-  border: 2px solid var(--gold);
-  background: linear-gradient(160deg, rgba(212, 160, 23, 0.18), rgba(0, 0, 0, 0.4));
-  box-shadow: 0 0 24px var(--gold-glow);
+  border: 2px solid var(--team-row-line, var(--gold));
+  background: linear-gradient(
+    160deg,
+    var(--team-row-fill, rgba(212, 160, 23, 0.18)),
+    rgba(0, 0, 0, 0.4)
+  );
+  box-shadow: 0 0 24px var(--team-primary-glow, var(--gold-glow));
   animation: ovr-glow 3s ease-in-out infinite;
 }
 
@@ -431,7 +519,7 @@ main {
   font-family: var(--font-display);
   font-size: 2.4rem;
   line-height: 1;
-  color: var(--gold-bright);
+  color: var(--team-text, var(--gold-bright));
 }
 
 .ovr span {
@@ -555,8 +643,8 @@ main {
   grid-row: 1 / span 2;
   width: 56px;
   height: 56px;
-  border: 1px solid var(--line);
-  background: var(--bg-soft);
+  border: 1px solid transparent;
+  background: transparent;
   overflow: hidden;
   display: grid;
   place-items: center;
@@ -566,6 +654,7 @@ main {
   width: 100%;
   height: 100%;
   object-fit: cover;
+  object-position: center top;
 }
 
 .player-card-icon.fallback {
@@ -1112,21 +1201,20 @@ body.team-themed::before {
 
 .roster-list {
   display: grid;
-  gap: 0.55rem;
-  max-width: 36rem;
+  gap: 0.65rem;
+  max-width: 38rem;
   margin: 0 auto;
   text-align: left;
 }
 
 .team-page .roster-row {
   border: none;
-  border-left: 4px solid var(--team-row-line, var(--gold));
-  background: var(--team-row-fill, rgba(212, 160, 23, 0.12));
+  background: var(--team-panel-soft, rgba(255, 255, 255, 0.04));
 }
 
 .team-page a.roster-row:hover {
-  background: var(--team-accent-soft, rgba(212, 160, 23, 0.18));
-  filter: brightness(1.08);
+  filter: brightness(1.12);
+  background: color-mix(in srgb, var(--team-panel-soft, rgba(255, 255, 255, 0.06)) 80%, #fff);
 }
 
 .team-page .roster-row,
@@ -1137,7 +1225,7 @@ body.team-themed::before {
 }
 
 .team-page .roster-row span {
-  color: var(--muted);
+  color: color-mix(in srgb, var(--text) 70%, var(--muted));
 }
 
 .team-page .back-link a:hover {
@@ -1150,14 +1238,16 @@ body.team-themed::before {
 
 .roster-row {
   display: grid;
-  grid-template-columns: 48px 1fr auto;
-  gap: 0.75rem;
-  align-items: center;
-  padding: 0.55rem 0.65rem;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  grid-template-columns: 3px 8px 58px minmax(0, 1fr) 6px;
+  gap: 0;
+  align-items: stretch;
+  min-height: 58px;
+  padding: 0;
+  border-bottom: none;
   color: inherit;
   text-decoration: none;
-  transition: background 0.15s ease;
+  overflow: hidden;
+  transition: filter 0.15s ease, background 0.15s ease;
 }
 
 a.roster-row:hover {
@@ -1168,40 +1258,77 @@ a.roster-row:hover {
   cursor: default;
 }
 
+.roster-stripe {
+  display: block;
+  min-height: 100%;
+}
+
+.roster-stripe-edge {
+  background: #050505;
+}
+
+.roster-stripe-accent {
+  background: var(--team-row-line, var(--gold));
+}
+
+.roster-stripe-end {
+  background: var(--team-stripe-end, var(--gold-dim));
+}
+
 .roster-row-icon {
-  width: 48px;
-  height: 48px;
+  width: 58px;
+  height: 58px;
   overflow: hidden;
   display: grid;
   place-items: center;
-  background: var(--bg-soft);
+  background: transparent;
+  align-self: stretch;
+}
+
+.team-page .roster-row-icon {
+  background: var(--team-icon-fill, rgba(255, 255, 255, 0.08));
+  box-shadow: inset -1px 0 0 rgba(0, 0, 0, 0.35);
 }
 
 .roster-row-icon img {
   width: 100%;
   height: 100%;
   object-fit: cover;
+  object-position: center top;
 }
 
 .roster-row-icon.fallback {
   font-family: var(--font-ui);
-  font-size: 0.75rem;
+  font-size: 0.7rem;
   letter-spacing: 0.08em;
-  color: var(--gold-dim);
+  color: var(--muted);
+}
+
+.roster-row-copy {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  padding: 0 0.9rem;
+  min-width: 0;
 }
 
 .roster-row strong {
   font-family: var(--font-ui);
   font-size: 1.15rem;
   letter-spacing: 0.04em;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
-.roster-row span {
+.roster-row-copy span {
   font-family: var(--font-ui);
   letter-spacing: 0.1em;
   text-transform: uppercase;
   font-size: 0.8rem;
   color: var(--muted);
+  flex-shrink: 0;
 }
 
 @media (max-width: 560px) {
@@ -1468,10 +1595,10 @@ a.roster-row:hover {
 @keyframes ovr-glow {
   0%,
   100% {
-    box-shadow: 0 0 18px var(--gold-glow);
+    box-shadow: 0 0 18px var(--team-primary-glow, var(--gold-glow));
   }
   50% {
-    box-shadow: 0 0 32px rgba(240, 195, 74, 0.55);
+    box-shadow: 0 0 36px var(--team-glow-strong, rgba(240, 195, 74, 0.55));
   }
 }
 
@@ -1513,8 +1640,9 @@ a.roster-row:hover {
   }
 
   .player-avatar {
-    max-width: 320px;
-    margin: 0 auto;
+    max-width: 380px;
+    margin-left: auto;
+    margin-right: auto;
   }
 }
 

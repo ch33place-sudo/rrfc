@@ -280,7 +280,10 @@
     const size = window.RRFCMedia.BUCKETS[bucket].size;
 
     try {
-      const dataUrl = await window.RRFCMedia.resizeToDataUrl(file, size);
+      const dataUrl = await window.RRFCMedia.resizeToDataUrl(file, size, {
+        // Player headshots fill the frame; logos keep full artwork with transparent padding.
+        fit: bucket === "players" ? "cover" : "contain",
+      });
       window.RRFCMedia.set(bucket, key, dataUrl);
 
       try {

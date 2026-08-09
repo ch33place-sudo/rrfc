@@ -84,7 +84,9 @@
     if (!file || !activePlayer) return;
 
     try {
-      const dataUrl = await window.RRFCIcons.resizeToDataUrl(file, 256);
+      const dataUrl = await window.RRFCIcons.resizeToDataUrl(file, 256, {
+        fit: "cover",
+      });
       window.RRFCIcons.setIcon(activePlayer, dataUrl);
 
       if (folderHandle) {

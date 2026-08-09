@@ -50,38 +50,48 @@
     </header>
 
     <main>
-      <section class="player-layout" data-player-profile>
-        <div class="player-avatar" aria-label="Player avatar placeholder">
-          <div class="avatar-placeholder">Avatar<br />coming soon</div>
-        </div>
+      <section class="player-profile" data-player-profile>
+        <p class="player-season" data-player-season>Season 11</p>
 
-        <div class="player-info">
-          <p class="team-name" data-player-club>90's Club</p>
-
-          <div class="player-name-row">
-            <h1 class="player-name" data-player-name>Player</h1>
-            <span class="badge" data-club-badge>90's Club</span>
+        <div class="player-layout">
+          <div class="player-avatar" aria-label="Player avatar placeholder">
+            <div class="avatar-placeholder">Avatar<br />coming soon</div>
           </div>
 
-          <p class="player-meta" data-player-meta></p>
-          <p class="player-note" data-player-note hidden></p>
+          <div class="player-info">
+            <p class="team-name player-team" data-player-team-wrap>
+              <img class="team-logo-sm" data-player-team-logo alt="" hidden />
+              <a data-player-team-link><span data-player-team>…</span></a>
+            </p>
 
-          <div class="rating-row">
-            <div class="ovr">
-              <strong data-player-ovr>—</strong>
-              <span>OVR</span>
+            <div class="player-name-row">
+              <h1 class="player-name" data-player-name>Player</h1>
+              <span class="badge" data-club-badge>90's Club</span>
             </div>
-            <span class="ovr-prev ovr-prev-profile" data-player-prev-ovr hidden></span>
-          </div>
 
-          <p class="back-link"><a href="players.html">← Back to players</a></p>
+            <div class="badge-row" data-player-badges></div>
+
+            <p class="player-meta" data-player-meta></p>
+            <p class="player-note" data-player-note hidden></p>
+
+            <div class="rating-row">
+              <div class="ovr">
+                <strong data-player-ovr>—</strong>
+                <span>OVR</span>
+              </div>
+              <span class="ovr-prev ovr-prev-profile" data-player-prev-ovr hidden></span>
+            </div>
+          </div>
         </div>
+
+        <p class="back-link"><a href="players.html">← Back to players</a></p>
       </section>
     </main>
 
     <footer class="site-footer">RRFC · Rec Room Football Community</footer>
     <script src="js/players-data.js"></script>
     <script src="js/icons.js"></script>
+    <script src="js/teams-data.js"></script>
     <script src="js/main.js"></script>
   </body>
 </html>

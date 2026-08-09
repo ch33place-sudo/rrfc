@@ -22,8 +22,16 @@
   const slugify = (name) => encodeURIComponent(name);
 
   const findPlayer = (raw) => {
-    const players = window.RRFC_PLAYERS || [];
     if (!raw) return null;
+    try {
+      if (window.RRFC_findPlayerByName) {
+        const found = window.RRFC_findPlayerByName(raw);
+        if (found) return found;
+      }
+    } catch {
+      /* fall through to basic lookup */
+    }
+    const players = window.RRFC_PLAYERS || [];
     const decoded = decodeURIComponent(raw).trim().toLowerCase();
     return players.find((p) => p.name.toLowerCase() === decoded) || null;
   };
@@ -81,12 +89,52 @@
   if (profileRoot && window.RRFC_PLAYERS) {
     const params = new URLSearchParams(window.location.search);
     const player = findPlayer(params.get("name")) || window.RRFC_PLAYERS[0];
+    const club = clubLabel(player.club);
 
+    // 1) Always paint core player data first so the page never depends on teams.
     document.title = `${player.name} — RRFC`;
+    document.body.classList.add("player-profile-page");
     profileRoot.querySelector("[data-player-name]").textContent = player.name;
-    profileRoot.querySelector("[data-player-club]").textContent = clubLabel(player.club);
     profileRoot.querySelector("[data-player-ovr]").textContent = String(player.ovr);
-    profileRoot.querySelector("[data-player-meta]").textContent = `${clubLabel(player.club)} · ${player.ovr} OVR`;
+    profileRoot.querySelector("[data-player-meta]").textContent =
+      `${club} · ${player.ovr} OVR`;
+
+    const badge = profileRoot.querySelector("[data-club-badge]");
+    if (badge) badge.textContent = club;
+
+    const badgesRoot = profileRoot.querySelector("[data-player-badges]");
+    if (badgesRoot) {
+      const chips = Array.isArray(player.badges) ? player.badges : [];
+      if (!chips.length) {
+        badgesRoot.innerHTML = "";
+        badgesRoot.hidden = true;
+      } else {
+        badgesRoot.hidden = false;
+        badgesRoot.innerHTML = chips
+          .map((b, i) => {
+            const colors =
+              (window.RRFC_colorsForTeamName &&
+                window.RRFC_colorsForTeamName(b.team)) ||
+              {};
+            const accent = colors.accent || colors.primary || "#f0c34a";
+            const primary = colors.primary || accent;
+            const title = b.team
+              ? `${b.label} · ${b.team}`
+              : b.label || "Badge";
+            return `
+              <span
+                class="badge trophy"
+                title="${title}"
+                style="
+                  --badge-accent: ${accent};
+                  --badge-primary: ${primary};
+                  animation-delay: ${0.08 + i * 0.06}s;
+                "
+              >${b.label || "Champion"}</span>`;
+          })
+          .join("");
+      }
+    }
 
     const prevEl = profileRoot.querySelector("[data-player-prev-ovr]");
     if (prevEl) {
@@ -109,21 +157,127 @@
       }
     }
 
-    const badge = profileRoot.querySelector("[data-club-badge]");
-    if (badge) badge.textContent = clubLabel(player.club);
-
     const avatar = profileRoot.querySelector(".player-avatar");
     if (avatar && window.RRFCIcons) {
       const url = window.RRFCIcons.resolveUrl(player.name);
       avatar.innerHTML = `
-        <img src="${url}" alt="${player.name}" onerror="this.style.display='none'; this.nextElementSibling.hidden=false;" />
+        <img src="${url}" alt="${player.name}" />
         <div class="avatar-placeholder" hidden>Avatar<br />coming soon</div>`;
       const img = avatar.querySelector("img");
+
+      const fitLineToOpaqueBottom = () => {
+        try {
+          if (!img.naturalWidth) return;
+          const canvas = document.createElement("canvas");
+          const w = img.naturalWidth;
+          const h = img.naturalHeight;
+          canvas.width = w;
+          canvas.height = h;
+          const ctx = canvas.getContext("2d", { willReadFrequently: true });
+          ctx.drawImage(img, 0, 0);
+          const { data } = ctx.getImageData(0, 0, w, h);
+
+          let bottom = -1;
+          for (let y = h - 1; y >= 0; y -= 1) {
+            const row = y * w * 4;
+            for (let x = 0; x < w; x += 1) {
+              if (data[row + x * 4 + 3] > 12) {
+                bottom = y;
+                break;
+              }
+            }
+            if (bottom >= 0) break;
+          }
+
+          if (bottom < 0) return;
+
+          const displayWidth = avatar.getBoundingClientRect().width || avatar.clientWidth;
+          if (!displayWidth) return;
+          const fullDisplayHeight = displayWidth * (h / w);
+          // Crop to last opaque pixel + 1px so the team line sits under the body.
+          const cropHeight = ((bottom + 1) / h) * fullDisplayHeight + 1;
+          avatar.classList.add("is-fitted");
+          avatar.style.height = `${Math.ceil(cropHeight)}px`;
+          img.style.width = "100%";
+          img.style.height = "auto";
+          img.style.maxWidth = "none";
+        } catch (err) {
+          console.warn("RRFC avatar line fit skipped:", err);
+        }
+      };
+
+      const layoutAvatar = () => {
+        avatar.style.height = "";
+        avatar.style.marginTop = "";
+        requestAnimationFrame(fitLineToOpaqueBottom);
+      };
+
+      if (img.complete && img.naturalWidth) layoutAvatar();
+      else img.addEventListener("load", layoutAvatar, { once: true });
+
+      window.addEventListener("resize", layoutAvatar);
+
       img.addEventListener("error", () => {
         img.style.display = "none";
+        avatar.style.height = "";
+        avatar.style.marginTop = "";
+        avatar.classList.remove("is-fitted");
         const ph = avatar.querySelector(".avatar-placeholder");
         if (ph) ph.hidden = false;
       });
+    }
+
+    // 2) Optional team overlay — failures here must not wipe the profile.
+    try {
+      const wrap = profileRoot.querySelector("[data-player-team-wrap]");
+      const teamLink = profileRoot.querySelector("[data-player-team-link]");
+      const teamLabel = profileRoot.querySelector("[data-player-team]");
+      const teamLogo = profileRoot.querySelector("[data-player-team-logo]");
+      const team =
+        (window.RRFC_findTeamForPlayer &&
+          window.RRFC_findTeamForPlayer(player.name)) ||
+        null;
+
+      if (wrap && teamLabel) {
+        wrap.hidden = false;
+        wrap.removeAttribute("hidden");
+        if (team) {
+          wrap.classList.remove("is-free-agent");
+          teamLabel.textContent = team.name;
+          if (teamLink) {
+            teamLink.href = `team.html?name=${encodeURIComponent(team.name)}`;
+          }
+          profileRoot.querySelector("[data-player-meta]").textContent =
+            `${team.name} · ${club} · ${player.ovr} OVR`;
+          const seasonEl = profileRoot.querySelector("[data-player-season]");
+          if (seasonEl && team.season != null) {
+            seasonEl.textContent = `Season ${team.season}`;
+          }
+          if (teamLogo && window.RRFCMedia) {
+            try {
+              teamLogo.hidden = false;
+              teamLogo.removeAttribute("hidden");
+              teamLogo.src = window.RRFCMedia.resolveUrl("teams", team.name);
+              teamLogo.alt = team.name;
+              teamLogo.onerror = () => teamLogo.classList.add("is-missing");
+            } catch {
+              teamLogo.hidden = true;
+            }
+          }
+          try {
+            if (window.RRFC_applyTeamTheme) window.RRFC_applyTeamTheme(team);
+          } catch (themeErr) {
+            console.warn("RRFC team theme skipped:", themeErr);
+          }
+        } else {
+          wrap.classList.add("is-free-agent");
+          teamLabel.textContent = "Free Agent";
+          if (teamLink) teamLink.removeAttribute("href");
+          if (teamLogo) teamLogo.hidden = true;
+        }
+      }
+    } catch (err) {
+      console.warn("RRFC team overlay skipped:", err);
     }
   }
 
@@ -221,6 +375,10 @@
                       : ""
                   }`
                 : "N/A";
+              const stripes = `
+                <span class="roster-stripe roster-stripe-edge" aria-hidden="true"></span>
+                <span class="roster-stripe roster-stripe-accent" aria-hidden="true"></span>`;
+              const stripeEnd = `<span class="roster-stripe roster-stripe-end" aria-hidden="true"></span>`;
               const icon = player
                 ? `<div class="roster-row-icon"><img src="${iconUrl}" alt="" onerror="this.parentElement.classList.add('fallback'); this.remove(); this.parentElement.textContent='RR';" /></div>`
                 : `<div class="roster-row-icon fallback">N/A</div>`;
@@ -228,16 +386,24 @@
               if (player) {
                 return `
                   <a class="roster-row" href="player.html?name=${encodeURIComponent(player.name)}">
+                    ${stripes}
                     ${icon}
-                    <strong>${name}</strong>
-                    <span>${meta}</span>
+                    <div class="roster-row-copy">
+                      <strong>${name}</strong>
+                      <span>${meta}</span>
+                    </div>
+                    ${stripeEnd}
                   </a>`;
               }
               return `
                 <div class="roster-row is-plain">
+                  ${stripes}
                   ${icon}
-                  <strong>${name}</strong>
-                  <span>${meta}</span>
+                  <div class="roster-row-copy">
+                    <strong>${name}</strong>
+                    <span>${meta}</span>
+                  </div>
+                  ${stripeEnd}
                 </div>`;
             })
             .join("")}
