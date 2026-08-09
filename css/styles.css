@@ -1527,3 +1527,260 @@ a.roster-row:hover {
     display: none;
   }
 }
+
+/* Schedule */
+.sched-week {
+  margin-bottom: 2.25rem;
+  animation: rise 0.55s ease both;
+}
+
+.sched-week-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 0.35rem 1rem;
+  margin-bottom: 0.75rem;
+  padding-bottom: 0.45rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.sched-week-head h2 {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: clamp(1.6rem, 4vw, 2.2rem);
+  letter-spacing: 0.06em;
+  color: var(--gold-bright);
+}
+
+.sched-week-head p {
+  margin: 0;
+  font-family: var(--font-ui);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--muted);
+  font-size: 0.85rem;
+}
+
+.sched-games {
+  display: grid;
+  gap: 0.5rem;
+}
+
+.sched-game {
+  display: grid;
+  grid-template-columns: 5.5rem 1fr;
+  gap: 0.75rem;
+  align-items: center;
+  padding: 0.65rem 0.75rem;
+  background: rgba(255, 255, 255, 0.03);
+  border-left: 3px solid var(--gold-dim);
+}
+
+.sched-time {
+  font-family: var(--font-ui);
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--gold-bright);
+  font-size: 0.9rem;
+}
+
+.sched-matchup {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.45rem 0.65rem;
+}
+
+.sched-team {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  color: inherit;
+  text-decoration: none;
+}
+
+a.sched-team:hover strong {
+  color: var(--gold-bright);
+}
+
+.sched-team strong {
+  font-family: var(--font-ui);
+  font-size: 1.05rem;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+}
+
+.sched-team.is-placeholder strong {
+  color: var(--muted);
+}
+
+.sched-vs {
+  font-family: var(--font-ui);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--muted);
+  font-size: 0.75rem;
+}
+
+@media (max-width: 560px) {
+  .sched-game {
+    grid-template-columns: 1fr;
+    gap: 0.35rem;
+  }
+}
+
+/* Standings */
+.standings-page {
+  text-align: center;
+  min-height: calc(100vh - var(--nav-h) - 8rem);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.standings-page .page-title {
+  margin-bottom: 0.35rem;
+}
+
+.standings-page .players-intro {
+  margin: 0 0 2rem;
+}
+
+.standings-page [data-standings-root] {
+  width: min(920px, 100%);
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.standings-table {
+  display: grid;
+  gap: 0.55rem;
+  width: 100%;
+  text-align: left;
+}
+
+.standings-head,
+.standings-row {
+  display: grid;
+  grid-template-columns: 3rem minmax(0, 1fr) 3.5rem 3.5rem 4.5rem;
+  gap: 0.75rem;
+  align-items: center;
+  padding: 0.85rem 1.1rem;
+}
+
+.standings-head {
+  font-family: var(--font-ui);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--muted);
+  font-size: 0.9rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  padding-bottom: 0.75rem;
+}
+
+.standings-row {
+  background: rgba(255, 255, 255, 0.04);
+  border-left: 4px solid var(--gold-dim);
+  color: inherit;
+  text-decoration: none;
+  transition: background 0.15s ease, border-color 0.15s ease, transform 0.15s ease;
+}
+
+.standings-row:hover {
+  background: rgba(212, 160, 23, 0.1);
+  border-left-color: var(--gold-bright);
+  transform: translateX(2px);
+}
+
+.standings-rank {
+  font-family: var(--font-display);
+  font-size: 1.55rem;
+  letter-spacing: 0.04em;
+  color: var(--gold-bright);
+  line-height: 1;
+}
+
+.standings-team {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.75rem;
+  min-width: 0;
+}
+
+.standings-team .team-logo-sm {
+  width: 36px !important;
+  height: 36px !important;
+  max-width: 36px !important;
+  max-height: 36px !important;
+}
+
+.standings-team strong {
+  font-family: var(--font-ui);
+  font-size: 1.25rem;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.standings-head span:nth-child(1),
+.standings-row .standings-rank {
+  text-align: center;
+}
+
+.standings-head span:nth-child(n + 3),
+.standings-row > span:nth-child(n + 3) {
+  font-family: var(--font-ui);
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  font-size: 1.15rem;
+  text-align: center;
+}
+
+.standings-head span:nth-child(n + 3) {
+  font-weight: 600;
+  font-size: 0.9rem;
+  color: var(--muted);
+}
+
+@media (max-width: 520px) {
+  .standings-head,
+  .standings-row {
+    grid-template-columns: 2rem minmax(0, 1fr) 2.25rem 2.25rem 3.25rem;
+    gap: 0.4rem;
+    padding: 0.7rem 0.55rem;
+  }
+
+  .standings-rank {
+    font-size: 1.25rem;
+  }
+
+  .standings-team {
+    gap: 0.45rem;
+  }
+
+  .standings-team .team-logo-sm {
+    width: 28px !important;
+    height: 28px !important;
+    max-width: 28px !important;
+    max-height: 28px !important;
+  }
+
+  .standings-team strong {
+    font-size: 1rem;
+  }
+
+  .standings-head span:nth-child(n + 3),
+  .standings-row > span:nth-child(n + 3) {
+    font-size: 1rem;
+  }
+
+  .standings-head span:nth-child(n + 3) {
+    font-size: 0.8rem;
+  }
+}
