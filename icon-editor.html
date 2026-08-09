@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Icon Editor — RRFC</title>
+    <link rel="icon" href="assets/logo.png" type="image/png" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700&family=Barlow:wght@400;500;600&family=Bebas+Neue&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="css/styles.css" />
+  </head>
+  <body>
+    <header class="site-header">
+      <a class="brand" href="index.html">
+        <img src="assets/logo.png" alt="RRFC logo" />
+        <div class="brand-text">
+          <strong>RRFC</strong>
+          <span>Icon Editor</span>
+        </div>
+      </a>
+      <nav class="nav" id="nav" aria-label="Primary">
+        <a href="index.html">Home</a>
+        <a href="players.html">Players</a>
+        <a class="active" href="icon-editor.html">Icon Editor</a>
+      </nav>
+      <div class="header-actions">
+        <button class="menu-toggle" type="button" data-menu-toggle aria-expanded="false">Menu</button>
+      </div>
+    </header>
+
+    <main class="editor-main">
+      <h1 class="page-title">Icon Editor</h1>
+      <p class="stub-note">
+        Upload a picture for each player. Icons save in this browser automatically, and show on the
+        Players list + profiles right away.
+      </p>
+
+      <div class="editor-toolbar">
+        <label class="editor-search">
+          <span>Search</span>
+          <input id="icon-search" type="search" placeholder="Type a name..." />
+        </label>
+
+        <label class="editor-filter">
+          <span>Club</span>
+          <select id="icon-club">
+            <option value="all">All clubs</option>
+            <option value="90">90's Club</option>
+            <option value="80">80's Club</option>
+            <option value="70">70's Club</option>
+          </select>
+        </label>
+
+        <div class="editor-progress" id="icon-progress">0 / 0 icons set</div>
+      </div>
+
+      <div class="editor-actions">
+        <button type="button" class="btn-ghost" id="save-folder-btn">
+          Save icons to folder…
+        </button>
+        <button type="button" class="btn-ghost" id="clear-missing-hint" hidden>
+          Clear all browser icons
+        </button>
+        <p class="editor-hint" id="folder-hint">
+          Optional: in Chrome/Edge, click “Save icons to folder…” and choose
+          <code>assets/players</code> so icons become real files for hosting later.
+        </p>
+      </div>
+
+      <div id="icon-editor-root" class="icon-editor-grid"></div>
+      <input id="icon-file-input" type="file" accept="image/*" hidden />
+    </main>
+
+    <footer class="site-footer">RRFC · Icon Editor</footer>
+    <script src="js/players-data.js"></script>
+    <script src="js/icons.js"></script>
+    <script src="js/main.js"></script>
+    <script src="js/icon-editor.js"></script>
+  </body>
+</html>
