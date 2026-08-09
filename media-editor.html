@@ -36,13 +36,14 @@
     <main class="editor-main">
       <h1 class="page-title">Media Editor</h1>
       <p class="stub-note">
-        Your image control panel. Upload player icons, team logos, and the site logo here. Changes
-        show on the site right away in this browser. Use “Save to folder…” so files go into
+        Upload player icons, Season 11 team logos, historic chip-winner logos, and the site logo.
+        Changes show in this browser right away. Use “Save to folder…” so files go into
         <code>assets/</code> before you push to GitHub.
       </p>
 
       <div class="editor-tabs" role="tablist">
         <button type="button" class="editor-tab active" data-tab="teams">Team Logos</button>
+        <button type="button" class="editor-tab" data-tab="historic">Historic Logos</button>
         <button type="button" class="editor-tab" data-tab="players">Player Icons</button>
         <button type="button" class="editor-tab" data-tab="site">Site Logo</button>
       </div>
@@ -52,7 +53,7 @@
           <span>Search</span>
           <input id="media-search" type="search" placeholder="Type a name..." />
         </label>
-        <label class="editor-filter" id="player-club-wrap">
+        <label class="editor-filter" id="player-club-wrap" hidden>
           <span>Club</span>
           <select id="media-club">
             <option value="all">All clubs</option>
@@ -61,22 +62,14 @@
             <option value="70">70's Club</option>
           </select>
         </label>
-        <label class="editor-filter" id="team-scope-wrap" hidden>
-          <span>Show</span>
-          <select id="media-team-scope">
-            <option value="current">Season 11 teams</option>
-            <option value="all">All history teams</option>
-          </select>
-        </label>
         <div class="editor-progress" id="media-progress">0 / 0 set</div>
       </div>
 
       <div class="editor-actions">
-        <button type="button" class="btn-ghost" id="save-folder-btn">Save to folder…</button>
+        <button type="button" class="btn-ghost" id="save-folder-btn">Connect folder…</button>
         <p class="editor-hint" id="folder-hint">
-          Chrome/Edge: connect the matching folder
-          (<code>assets/teams</code>, <code>assets/players</code>, or <code>assets</code> so uploads
-          become real files for GitHub.
+          First upload will ask you to choose <code>assets/teams</code> (or players/assets). After
+          that, uploads save there automatically. Still push with GitHub Desktop for the live site.
         </p>
       </div>
 

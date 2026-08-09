@@ -25,6 +25,18 @@ window.RRFC_HISTORY_TEAMS = (() => {
   return [...names].sort((a, b) => a.localeCompare(b));
 })();
 
+/** Unique championship-winning teams (for historic logos). */
+window.RRFC_CHIP_CHAMPIONS = (() => {
+  const names = new Set();
+  const chips = window.RRFC_CHAMPIONSHIPS || {};
+  for (const leagueId of Object.keys(chips)) {
+    for (const s of chips[leagueId] || []) {
+      if (s.champion) names.add(s.champion);
+    }
+  }
+  return [...names].sort((a, b) => a.localeCompare(b));
+})();
+
 window.RRFC_findTeam = (raw) => {
   if (!raw) return null;
   const decoded = decodeURIComponent(raw).trim().toLowerCase();

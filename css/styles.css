@@ -902,7 +902,6 @@ main {
   object-fit: contain;
   display: block;
   flex-shrink: 0;
-  filter: drop-shadow(0 0 0.5px #fff);
 }
 
 .team-logo-sm.is-missing {
@@ -952,14 +951,12 @@ main {
   width: 100%;
   height: 100%;
   object-fit: contain;
-  filter: drop-shadow(0 0 0.6px #fff);
 }
 
 .team-hero-logo img {
   width: 100%;
   height: 100%;
   object-fit: contain;
-  filter: drop-shadow(0 0 0.6px #fff);
 }
 
 .team-card-name {
