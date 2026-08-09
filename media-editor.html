@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Media Editor — RRFC</title>
+    <link rel="icon" href="assets/logo.png" type="image/png" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700&family=Barlow:wght@400;500;600&family=Bebas+Neue&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="css/styles.css" />
+  </head>
+  <body>
+    <header class="site-header">
+      <a class="brand" href="index.html">
+        <img src="assets/logo.png" alt="RRFC logo" data-site-logo />
+        <div class="brand-text">
+          <strong>RRFC</strong>
+          <span>Media Editor</span>
+        </div>
+      </a>
+      <nav class="nav" id="nav" aria-label="Primary">
+        <a href="index.html">Home</a>
+        <a href="teams.html">Teams</a>
+        <a href="players.html">Players</a>
+        <a class="active" href="media-editor.html">Media Editor</a>
+      </nav>
+      <div class="header-actions">
+        <button class="menu-toggle" type="button" data-menu-toggle aria-expanded="false">Menu</button>
+      </div>
+    </header>
+
+    <main class="editor-main">
+      <h1 class="page-title">Media Editor</h1>
+      <p class="stub-note">
+        Your image control panel. Upload player icons, team logos, and the site logo here. Changes
+        show on the site right away in this browser. Use “Save to folder…” so files go into
+        <code>assets/</code> before you push to GitHub.
+      </p>
+
+      <div class="editor-tabs" role="tablist">
+        <button type="button" class="editor-tab active" data-tab="teams">Team Logos</button>
+        <button type="button" class="editor-tab" data-tab="players">Player Icons</button>
+        <button type="button" class="editor-tab" data-tab="site">Site Logo</button>
+      </div>
+
+      <div class="editor-toolbar" id="editor-toolbar">
+        <label class="editor-search">
+          <span>Search</span>
+          <input id="media-search" type="search" placeholder="Type a name..." />
+        </label>
+        <label class="editor-filter" id="player-club-wrap">
+          <span>Club</span>
+          <select id="media-club">
+            <option value="all">All clubs</option>
+            <option value="90">90's Club</option>
+            <option value="80">80's Club</option>
+            <option value="70">70's Club</option>
+          </select>
+        </label>
+        <label class="editor-filter" id="team-scope-wrap" hidden>
+          <span>Show</span>
+          <select id="media-team-scope">
+            <option value="current">Season 11 teams</option>
+            <option value="all">All history teams</option>
+          </select>
+        </label>
+        <div class="editor-progress" id="media-progress">0 / 0 set</div>
+      </div>
+
+      <div class="editor-actions">
+        <button type="button" class="btn-ghost" id="save-folder-btn">Save to folder…</button>
+        <p class="editor-hint" id="folder-hint">
+          Chrome/Edge: connect the matching folder
+          (<code>assets/teams</code>, <code>assets/players</code>, or <code>assets</code> so uploads
+          become real files for GitHub.
+        </p>
+      </div>
+
+      <div id="media-editor-root" class="icon-editor-grid"></div>
+      <input id="media-file-input" type="file" accept="image/*" hidden />
+    </main>
+
+    <footer class="site-footer">RRFC · Media Editor</footer>
+    <script src="js/players-data.js"></script>
+    <script src="js/championships-data.js"></script>
+    <script src="js/teams-data.js"></script>
+    <script src="js/icons.js"></script>
+    <script src="js/main.js"></script>
+    <script src="js/media-editor.js"></script>
+  </body>
+</html>

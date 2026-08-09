@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Teams — RRFC</title>
+    <title>Team — RRFC</title>
     <link rel="icon" href="assets/logo.png" type="image/png" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -47,13 +47,20 @@
       </div>
     </header>
 
-    <main>
-      <h1 class="page-title">Teams</h1>
-      <p class="stub-note players-intro">
-        Season 11 roster.
-        <a href="media-editor.html">Open Media Editor</a> to upload team logos.
-      </p>
-      <div id="teams-root"></div>
+    <main data-team-page>
+      <section class="team-hero">
+        <div class="team-hero-logo">
+          <img data-team-logo src="" alt="" />
+        </div>
+        <div>
+          <h1 data-team-name>Team</h1>
+          <p class="team-card-meta" data-team-meta></p>
+        </div>
+      </section>
+
+      <h2 class="page-title" style="font-size: 2rem; margin-bottom: 1rem">Roster</h2>
+      <div data-team-roster></div>
+      <p class="back-link"><a href="teams.html">← Back to teams</a></p>
     </main>
 
     <footer class="site-footer">RRFC · Rec Room Football Community</footer>

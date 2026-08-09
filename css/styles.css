@@ -708,6 +708,10 @@ main {
   color: var(--muted);
 }
 
+.icon-edit-fallback[hidden] {
+  display: none !important;
+}
+
 .icon-edit-info {
   display: flex;
   flex-direction: column;
@@ -863,8 +867,15 @@ main {
   color: var(--gold-bright);
 }
 
-.chip-main h3 {
+.chip-main h3,
+.chip-main p {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
   margin: 0;
+}
+
+.chip-main h3 {
   font-family: var(--font-ui);
   font-size: 1.15rem;
   font-weight: 700;
@@ -873,9 +884,212 @@ main {
 }
 
 .chip-main p {
-  margin: 0.2rem 0 0;
+  margin-top: 0.2rem;
   color: var(--muted);
   font-size: 0.95rem;
+}
+
+.team-logo-sm {
+  width: 28px;
+  height: 28px;
+  object-fit: contain;
+  flex-shrink: 0;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(0, 0, 0, 0.35);
+}
+
+.team-logo-sm.is-missing {
+  display: none;
+}
+
+.teams-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 1rem;
+}
+
+.team-card {
+  display: block;
+  padding: 1rem 0.5rem;
+  border: none;
+  background: transparent;
+  text-align: center;
+  animation: rise 0.6s ease both;
+  transition: transform 0.2s ease;
+  color: inherit;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.team-card:hover {
+  transform: translateY(-4px);
+}
+
+.team-card:hover .team-card-name {
+  color: var(--gold-bright);
+}
+
+.team-card-logo {
+  position: relative;
+  width: 96px;
+  height: 96px;
+  margin: 0 auto 0.85rem;
+  border: none;
+  background: transparent;
+  overflow: hidden;
+  display: grid;
+  place-items: center;
+}
+
+.team-card-logo img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.team-card-name {
+  font-family: var(--font-ui);
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  font-size: 1.05rem;
+  transition: color 0.2s ease;
+}
+
+.team-card-meta {
+  margin-top: 0.25rem;
+  font-family: var(--font-ui);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--muted);
+  font-size: 0.8rem;
+}
+
+.team-hero {
+  display: grid;
+  grid-template-columns: 120px 1fr;
+  gap: 1.25rem;
+  align-items: center;
+  margin-bottom: 2rem;
+  animation: rise 0.6s ease both;
+}
+
+.team-hero-logo {
+  width: 120px;
+  height: 120px;
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+}
+
+.team-hero-logo img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.team-hero h1 {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: clamp(2.2rem, 6vw, 3.5rem);
+  letter-spacing: 0.05em;
+  color: var(--gold-bright);
+  line-height: 0.95;
+}
+
+.roster-list {
+  display: grid;
+  gap: 0.45rem;
+  max-width: 36rem;
+}
+
+.roster-row {
+  display: grid;
+  grid-template-columns: 48px 1fr auto;
+  gap: 0.75rem;
+  align-items: center;
+  padding: 0.55rem 0.65rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  color: inherit;
+  text-decoration: none;
+  transition: background 0.15s ease;
+}
+
+a.roster-row:hover {
+  background: rgba(212, 160, 23, 0.08);
+}
+
+.roster-row.is-plain {
+  cursor: default;
+}
+
+.roster-row-icon {
+  width: 48px;
+  height: 48px;
+  overflow: hidden;
+  display: grid;
+  place-items: center;
+  background: var(--bg-soft);
+}
+
+.roster-row-icon img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.roster-row-icon.fallback {
+  font-family: var(--font-ui);
+  font-size: 0.75rem;
+  letter-spacing: 0.08em;
+  color: var(--gold-dim);
+}
+
+.roster-row strong {
+  font-family: var(--font-ui);
+  font-size: 1.15rem;
+  letter-spacing: 0.04em;
+}
+
+.roster-row span {
+  font-family: var(--font-ui);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  font-size: 0.8rem;
+  color: var(--muted);
+}
+
+@media (max-width: 560px) {
+  .team-hero {
+    grid-template-columns: 1fr;
+    justify-items: start;
+  }
+}
+
+.editor-tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.45rem;
+  margin: 1.25rem 0 0.5rem;
+}
+
+.editor-tab {
+  font-family: var(--font-ui);
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  font-size: 0.85rem;
+  padding: 0.55rem 0.9rem;
+  border: 1px solid var(--line);
+  background: transparent;
+  color: var(--muted);
+  cursor: pointer;
+}
+
+.editor-tab.active {
+  color: #111;
+  background: linear-gradient(180deg, var(--gold-bright), var(--gold));
+  border-color: var(--gold-bright);
 }
 
 .chip-mvp {

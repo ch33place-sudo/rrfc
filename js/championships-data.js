@@ -58,7 +58,7 @@ window.RRFC_CHAMPIONSHIPS = {
       season: 6,
       champion: "Rutgers Scarlett Knights",
       opponent: "South Alabama Jaguars",
-      mvp: "Relmy",
+      mvp: "Miri",
     },
     {
       season: 7,

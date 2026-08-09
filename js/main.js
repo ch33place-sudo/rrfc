@@ -109,4 +109,94 @@
       });
     }
   }
+
+  const teamsRoot = document.getElementById("teams-root");
+  if (teamsRoot && window.RRFC_TEAMS) {
+    teamsRoot.innerHTML = `
+      <div class="teams-grid">
+        ${window.RRFC_TEAMS.map((t, i) => {
+          const url = window.RRFCMedia
+            ? window.RRFCMedia.resolveUrl("teams", t.name)
+            : "";
+          return `
+          <a class="team-card" href="team.html?name=${encodeURIComponent(t.name)}" style="animation-delay: ${Math.min(i * 0.04, 0.4)}s">
+            <div class="team-card-logo">
+              <img src="${url}" alt="${t.name}" />
+            </div>
+            <div class="team-card-name">${t.name}</div>
+            <div class="team-card-meta">Season ${t.season}</div>
+          </a>`;
+        }).join("")}
+      </div>`;
+  }
+
+  const teamPage = document.querySelector("[data-team-page]");
+  if (teamPage && window.RRFC_TEAMS) {
+    const params = new URLSearchParams(window.location.search);
+    const team =
+      (window.RRFC_findTeam && window.RRFC_findTeam(params.get("name"))) ||
+      window.RRFC_TEAMS[0];
+
+    document.title = `${team.name} — RRFC`;
+    const logoUrl = window.RRFCMedia
+      ? window.RRFCMedia.resolveUrl("teams", team.name)
+      : "";
+
+    teamPage.querySelector("[data-team-name]").textContent = team.name;
+    teamPage.querySelector("[data-team-meta]").textContent = `Season ${team.season}`;
+    const logoImg = teamPage.querySelector("[data-team-logo]");
+    if (logoImg) {
+      logoImg.src = logoUrl;
+      logoImg.alt = team.name;
+    }
+
+    const rosterRoot = teamPage.querySelector("[data-team-roster]");
+    const roster = team.roster || [];
+    if (!roster.length) {
+      rosterRoot.innerHTML = `<p class="stub-note">Roster not added yet. Send the player list and we’ll plug it in.</p>`;
+    } else {
+      rosterRoot.innerHTML = `
+        <div class="roster-list">
+          ${roster
+            .map((name) => {
+              const player =
+                window.RRFC_findPlayerByName && window.RRFC_findPlayerByName(name);
+              const iconUrl =
+                player && window.RRFCIcons
+                  ? window.RRFCIcons.resolveUrl(player.name)
+                  : "";
+              const meta = player ? `${player.ovr} OVR` : "No profile";
+              const icon = player
+                ? `<div class="roster-row-icon"><img src="${iconUrl}" alt="" onerror="this.parentElement.classList.add('fallback'); this.remove(); this.parentElement.textContent='RR';" /></div>`
+                : `<div class="roster-row-icon fallback">—</div>`;
+
+              if (player) {
+                return `
+                  <a class="roster-row" href="player.html?name=${encodeURIComponent(player.name)}">
+                    ${icon}
+                    <strong>${name}</strong>
+                    <span>${meta}</span>
+                  </a>`;
+              }
+              return `
+                <div class="roster-row is-plain">
+                  ${icon}
+                  <strong>${name}</strong>
+                  <span>${meta}</span>
+                </div>`;
+            })
+            .join("")}
+        </div>`;
+    }
+  }
+
+  // Apply custom site logo from Media Editor if present
+  if (window.RRFCMedia) {
+    const logoUrl = window.RRFCMedia.resolveUrl("site", "logo");
+    document.querySelectorAll(".brand img, .league-mark, [data-site-logo]").forEach((img) => {
+      const local = window.RRFCMedia.get("site", "logo");
+      if (local) img.src = local;
+      else img.src = logoUrl;
+    });
+  }
 })();

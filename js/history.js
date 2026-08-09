@@ -2,7 +2,12 @@
   const root = document.getElementById("history-root");
   if (!root || !window.RRFC_LEAGUES || !window.RRFC_CHAMPIONSHIPS) return;
 
-  // Show active RRFC first, then older inactive leagues
+  const teamLogo = (name) => {
+    if (!window.RRFCMedia) return "";
+    const url = window.RRFCMedia.resolveUrl("teams", name);
+    return `<img class="team-logo-sm" src="${url}" alt="" data-team-logo onerror="this.classList.add('is-missing')" />`;
+  };
+
   const order = ["rrfc", "rrfo", "rrfa"];
 
   root.innerHTML = order
@@ -19,8 +24,8 @@
         <article class="chip-row">
           <div class="chip-season">S${s.season}</div>
           <div class="chip-main">
-            <h3>${s.champion}</h3>
-            <p>def. ${s.opponent}</p>
+            <h3>${teamLogo(s.champion)}<span>${s.champion}</span></h3>
+            <p>${teamLogo(s.opponent)}<span>def. ${s.opponent}</span></p>
           </div>
           <div class="chip-mvp">
             <span>Chip MVP</span>

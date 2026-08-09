@@ -1,5 +1,21 @@
-window.RRFCIcons = (() => {
-  const STORAGE_KEY = "rrfc-player-icons-v1";
+window.RRFCMedia = (() => {
+  const BUCKETS = {
+    players: {
+      storageKey: "rrfc-player-icons-v1",
+      dir: "assets/players",
+      size: 256,
+    },
+    teams: {
+      storageKey: "rrfc-team-logos-v1",
+      dir: "assets/teams",
+      size: 256,
+    },
+    site: {
+      storageKey: "rrfc-site-images-v1",
+      dir: "assets",
+      size: 512,
+    },
+  };
 
   const slug = (name) =>
     String(name)
@@ -9,38 +25,44 @@ window.RRFCIcons = (() => {
       .replace(/[^a-z0-9]+/g, "-")
       .replace(/^-+|-+$/g, "");
 
-  const readMap = () => {
+  const bucket = (id) => BUCKETS[id] || BUCKETS.players;
+
+  const readMap = (bucketId) => {
     try {
-      return JSON.parse(localStorage.getItem(STORAGE_KEY) || "{}");
+      return JSON.parse(localStorage.getItem(bucket(bucketId).storageKey) || "{}");
     } catch {
       return {};
     }
   };
 
-  const writeMap = (map) => {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(map));
+  const writeMap = (bucketId, map) => {
+    localStorage.setItem(bucket(bucketId).storageKey, JSON.stringify(map));
   };
 
-  const getIcon = (name) => {
-    const map = readMap();
+  const get = (bucketId, name) => {
+    const map = readMap(bucketId);
     return map[slug(name)] || null;
   };
 
-  const setIcon = (name, dataUrl) => {
-    const map = readMap();
+  const set = (bucketId, name, dataUrl) => {
+    const map = readMap(bucketId);
     map[slug(name)] = dataUrl;
-    writeMap(map);
+    writeMap(bucketId, map);
   };
 
-  const removeIcon = (name) => {
-    const map = readMap();
+  const remove = (bucketId, name) => {
+    const map = readMap(bucketId);
     delete map[slug(name)];
-    writeMap(map);
+    writeMap(bucketId, map);
   };
 
-  const fileUrl = (name) => `assets/players/${slug(name)}.png`;
+  const fileUrl = (bucketId, name) => {
+    const b = bucket(bucketId);
+    if (bucketId === "site" && name === "logo") return "assets/logo.png";
+    return `${b.dir}/${slug(name)}.png`;
+  };
 
-  const resolveUrl = (name) => getIcon(name) || fileUrl(name);
+  const resolveUrl = (bucketId, name) => get(bucketId, name) || fileUrl(bucketId, name);
 
   const resizeToDataUrl = (file, size = 256) =>
     new Promise((resolve, reject) => {
@@ -60,7 +82,7 @@ window.RRFCIcons = (() => {
           ctx.fillStyle = "#111";
           ctx.fillRect(0, 0, size, size);
           ctx.drawImage(img, (size - w) / 2, (size - h) / 2, w, h);
-          resolve(canvas.toDataURL("image/jpeg", 0.88));
+          resolve(canvas.toDataURL("image/jpeg", 0.9));
         };
         img.src = reader.result;
       };
@@ -77,15 +99,34 @@ window.RRFCIcons = (() => {
   };
 
   return {
+    BUCKETS,
     slug,
     readMap,
-    getIcon,
-    setIcon,
-    removeIcon,
+    get,
+    set,
+    remove,
     fileUrl,
     resolveUrl,
     resizeToDataUrl,
     dataUrlToBlob,
-    STORAGE_KEY,
   };
 })();
+
+/* Back-compat for player icons */
+window.RRFCIcons = {
+  slug: (...a) => window.RRFCMedia.slug(...a),
+  readMap: () => window.RRFCMedia.readMap("players"),
+  getIcon: (name) => window.RRFCMedia.get("players", name),
+  setIcon: (name, dataUrl) => window.RRFCMedia.set("players", name, dataUrl),
+  removeIcon: (name) => window.RRFCMedia.remove("players", name),
+  fileUrl: (name) => window.RRFCMedia.fileUrl("players", name),
+  resolveUrl: (name) => window.RRFCMedia.resolveUrl("players", name),
+  resizeToDataUrl: (...a) => window.RRFCMedia.resizeToDataUrl(...a),
+  dataUrlToBlob: (...a) => window.RRFCMedia.dataUrlToBlob(...a),
+  STORAGE_KEY: "rrfc-player-icons-v1",
+};
+
+window.RRFCTeams = {
+  resolveLogo: (name) => window.RRFCMedia.resolveUrl("teams", name),
+  getLogo: (name) => window.RRFCMedia.get("teams", name),
+};
