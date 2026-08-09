@@ -236,7 +236,7 @@ window.RRFC_SEASON_AWARDS = [
     season: 2,
     awards: {
       MVP: "Yin",
-      ROTY: "N/A",
+      ROTY: "Junk",
       MIP: "OBJ",
       COTY: "Jevsal",
       Sleeper: "Genz",
