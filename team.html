@@ -47,18 +47,27 @@
       </div>
     </header>
 
-    <main data-team-page>
+    <main data-team-page class="team-page">
       <section class="team-hero">
+        <div class="team-color-bar" aria-hidden="true">
+          <span class="team-swatch is-a"></span>
+          <span class="team-swatch is-b"></span>
+          <span class="team-swatch is-c"></span>
+        </div>
+        <p class="team-card-meta" data-team-meta></p>
         <div class="team-hero-logo">
           <img data-team-logo src="" alt="" />
         </div>
-        <div>
+        <div class="team-hero-copy">
           <h1 data-team-name>Team</h1>
-          <p class="team-card-meta" data-team-meta></p>
+          <div class="team-avg" data-team-top5 hidden>
+            <span class="team-avg-label">Team Average (starters)</span>
+            <span class="team-avg-value" data-team-top5-value></span>
+          </div>
         </div>
       </section>
 
-      <h2 class="page-title" style="font-size: 2rem; margin-bottom: 1rem">Roster</h2>
+      <h2 class="page-title roster-title">Roster</h2>
       <div data-team-roster></div>
       <p class="back-link"><a href="teams.html">← Back to teams</a></p>
     </main>

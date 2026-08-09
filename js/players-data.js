@@ -1,3 +1,9 @@
+/* RRFC players
+ *
+ * When updating an overall later, set prevOvr to the old number:
+ *   { name: "Miri", ovr: 97, prevOvr: 96, club: "90" }
+ * Leave prevOvr out (or equal to ovr) if it hasn't changed — it won't show.
+ */
 window.RRFC_PLAYERS = [
   // 90's Club
   { name: "Miri", ovr: 96, club: "90" },
@@ -12,7 +18,7 @@ window.RRFC_PLAYERS = [
   { name: "Revanue", ovr: 92, club: "90" },
   { name: "Kratos", ovr: 91, club: "90" },
   { name: "Error", ovr: 91, club: "90" },
-  { name: "Selfmade Jay", ovr: 90, club: "90" },
+  { name: "Selfmadejay", ovr: 90, club: "90" },
   { name: "Wo", ovr: 90, club: "90" },
   { name: "SlashPass", ovr: 90, club: "90" },
   { name: "Shark", ovr: 90, club: "90" },
@@ -37,7 +43,7 @@ window.RRFC_PLAYERS = [
     note: "Would be way higher but headset broke",
   },
   { name: "Kaizen", ovr: 85, club: "80" },
-  { name: "Apx11o", ovr: 85, club: "80" },
+  { name: "Apx11o", ovr: 85, club: "80", aliases: ["Apollo"] },
   { name: "icy", ovr: 84, club: "80" },
   { name: "Bossness", ovr: 84, club: "80" },
   { name: "Noah", ovr: 83, club: "80" },
@@ -59,9 +65,9 @@ window.RRFC_PLAYERS = [
   { name: "Rain", ovr: 79, club: "70" },
   { name: "Trey/Flock", ovr: 79, club: "70" },
   { name: "Kakarat", ovr: 78, club: "70" },
-  { name: "AppleAJ", ovr: 78, club: "70" },
+  { name: "AppleAJ", ovr: 78, club: "70", aliases: ["Aj", "AJ"] },
   { name: "Mar", ovr: 78, club: "70" },
-  { name: "5starmax", ovr: 78, club: "70" },
+  { name: "5starmax", ovr: 78, club: "70", aliases: ["Max"] },
   { name: "Deer", ovr: 78, club: "70" },
   { name: "Mikey", ovr: 78, club: "70" },
   { name: "Straw", ovr: 78, club: "70" },
@@ -78,7 +84,7 @@ window.RRFC_PLAYERS = [
   { name: "Yilo", ovr: 74, club: "70" },
   { name: "Polo", ovr: 74, club: "70" },
   { name: "Mars", ovr: 74, club: "70" },
-  { name: "D2 Crazy", ovr: 74, club: "70" },
+  { name: "D2 Crazy", ovr: 74, club: "70", aliases: ["Crazy"] },
   { name: "Sasuke", ovr: 73, club: "70" },
   { name: "ASPshimmy", ovr: 73, club: "70" },
   { name: "Spoon", ovr: 73, club: "70" },

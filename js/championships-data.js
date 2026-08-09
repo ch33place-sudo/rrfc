@@ -222,7 +222,7 @@ window.RRFC_SEASON_AWARDS = [
     season: 1,
     awards: {
       MVP: "Vex",
-      ROTY: "Crazy",
+      ROTY: "Yank",
       MIP: "Kayden",
       COTY: "Chee",
       Sleeper: "Dylan",

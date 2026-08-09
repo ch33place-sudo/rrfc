@@ -13,6 +13,12 @@
     return club ? club.label : `${clubId}'s Club`;
   };
 
+  const ovrChanged = (p) =>
+    p && p.prevOvr != null && Number(p.prevOvr) !== Number(p.ovr);
+
+  const prevOvrHtml = (p) =>
+    ovrChanged(p) ? `<span class="ovr-prev">was ${p.prevOvr}</span>` : "";
+
   const slugify = (name) => encodeURIComponent(name);
 
   const findPlayer = (raw) => {
@@ -45,7 +51,7 @@
           <a class="player-card" href="player.html?name=${slugify(p.name)}" style="animation-delay: ${Math.min(i * 0.03, 0.4)}s">
             ${iconHtml(p.name)}
             <div class="name">${p.name}</div>
-            <div class="meta">${p.ovr} OVR${p.note ? " · *" : ""}</div>
+            <div class="meta">${p.ovr} OVR ${prevOvrHtml(p)}${p.note ? " · *" : ""}</div>
           </a>`
           )
           .join("");
@@ -81,6 +87,17 @@
     profileRoot.querySelector("[data-player-club]").textContent = clubLabel(player.club);
     profileRoot.querySelector("[data-player-ovr]").textContent = String(player.ovr);
     profileRoot.querySelector("[data-player-meta]").textContent = `${clubLabel(player.club)} · ${player.ovr} OVR`;
+
+    const prevEl = profileRoot.querySelector("[data-player-prev-ovr]");
+    if (prevEl) {
+      if (ovrChanged(player)) {
+        prevEl.hidden = false;
+        prevEl.textContent = `was ${player.prevOvr}`;
+      } else {
+        prevEl.hidden = true;
+        prevEl.textContent = "";
+      }
+    }
 
     const noteEl = profileRoot.querySelector("[data-player-note]");
     if (noteEl) {
@@ -138,6 +155,8 @@
       window.RRFC_TEAMS[0];
 
     document.title = `${team.name} — RRFC`;
+    if (window.RRFC_applyTeamTheme) window.RRFC_applyTeamTheme(team);
+
     const logoUrl = window.RRFCMedia
       ? window.RRFCMedia.resolveUrl("teams", team.name)
       : "";
@@ -151,7 +170,37 @@
     }
 
     const rosterRoot = teamPage.querySelector("[data-team-roster]");
-    const roster = team.roster || [];
+    const top5El = teamPage.querySelector("[data-team-top5]");
+    const roster = [...(team.roster || [])].sort((a, b) => {
+      const pa = window.RRFC_findPlayerByName && window.RRFC_findPlayerByName(a);
+      const pb = window.RRFC_findPlayerByName && window.RRFC_findPlayerByName(b);
+      const oa = pa && pa.ovr != null ? Number(pa.ovr) : -Infinity;
+      const ob = pb && pb.ovr != null ? Number(pb.ovr) : -Infinity;
+      if (ob !== oa) return ob - oa;
+      return String(a).localeCompare(String(b));
+    });
+
+    const ovrs = roster
+      .map((name) => {
+        const player =
+          window.RRFC_findPlayerByName && window.RRFC_findPlayerByName(name);
+        return player && player.ovr != null ? Number(player.ovr) : null;
+      })
+      .filter((n) => Number.isFinite(n));
+
+    if (top5El) {
+      const valueEl = top5El.querySelector("[data-team-top5-value]");
+      if (ovrs.length) {
+        const top = ovrs.slice(0, 5);
+        const avg = Math.round(top.reduce((sum, n) => sum + n, 0) / top.length);
+        top5El.hidden = false;
+        if (valueEl) valueEl.textContent = String(avg);
+      } else {
+        top5El.hidden = true;
+        if (valueEl) valueEl.textContent = "";
+      }
+    }
+
     if (!roster.length) {
       rosterRoot.innerHTML = `<p class="stub-note">Roster not added yet. Send the player list and we’ll plug it in.</p>`;
     } else {
@@ -165,10 +214,16 @@
                 player && window.RRFCIcons
                   ? window.RRFCIcons.resolveUrl(player.name)
                   : "";
-              const meta = player ? `${player.ovr} OVR` : "No profile";
+              const meta = player
+                ? `${player.ovr} OVR${
+                    player.prevOvr != null && Number(player.prevOvr) !== Number(player.ovr)
+                      ? ` · was ${player.prevOvr}`
+                      : ""
+                  }`
+                : "N/A";
               const icon = player
                 ? `<div class="roster-row-icon"><img src="${iconUrl}" alt="" onerror="this.parentElement.classList.add('fallback'); this.remove(); this.parentElement.textContent='RR';" /></div>`
-                : `<div class="roster-row-icon fallback">—</div>`;
+                : `<div class="roster-row-icon fallback">N/A</div>`;
 
               if (player) {
                 return `
