@@ -852,8 +852,9 @@ main {
 
 .chip-row {
   display: grid;
-  grid-template-columns: 52px 28px 1fr auto;
-  gap: 0.65rem;
+  grid-template-columns: 44px 26px minmax(0, 1fr) auto;
+  column-gap: 0.35rem;
+  row-gap: 0.55rem;
   align-items: center;
   padding: 0.75rem 1rem;
   border: 1px solid rgba(255, 255, 255, 0.08);
@@ -868,11 +869,15 @@ main {
 }
 
 .chip-logo {
-  width: 28px;
-  height: 28px;
+  width: 26px;
+  height: 26px;
   display: grid;
   place-items: center;
   overflow: hidden;
+}
+
+.chip-main {
+  padding-left: 0.45rem;
 }
 
 .chip-main h3,
@@ -906,6 +911,13 @@ main {
 
 .team-logo-sm.is-missing {
   display: none !important;
+}
+
+/* Collapse empty logo slot when image is missing */
+.chip-logo:has(.team-logo-sm.is-missing),
+.chip-logo:empty {
+  width: 0;
+  min-width: 0;
 }
 
 .teams-grid {
@@ -1271,11 +1283,12 @@ a.roster-row:hover {
 
 @media (max-width: 700px) {
   .chip-row {
-    grid-template-columns: 44px 24px 1fr;
+    grid-template-columns: 40px 24px minmax(0, 1fr);
+    column-gap: 0.3rem;
   }
 
   .chip-mvp {
-    grid-column: 2 / -1;
+    grid-column: 1 / -1;
     text-align: left;
   }
 }
