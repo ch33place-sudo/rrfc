@@ -3,8 +3,11 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>RRFC — Rec Room Football Community</title>
-    <meta name="description" content="Rec Room Football Community — league hub for standings, schedule, teams, and players." />
+    <title>Rec Room Football Community — RRFC</title>
+    <meta
+      name="description"
+      content="Rec Room Football Community — league hub for standings, schedule, teams, and players."
+    />
     <link rel="icon" href="assets/logo.png" type="image/png" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -14,7 +17,7 @@
     />
     <link rel="stylesheet" href="css/styles.css" />
   </head>
-  <body>
+  <body class="home-page">
     <header class="site-header">
       <a class="brand" href="index.html">
         <img src="assets/logo.png" alt="RRFC logo" />
@@ -50,22 +53,72 @@
       </div>
     </header>
 
-    <main>
-      <section class="home-hero">
-        <img class="league-mark" src="assets/logo.png" alt="" />
-        <h1>RRFC</h1>
-        <p>
-          Rec Room Football Community — a gold-and-black league hub for teams, players, and
-          season play.
-        </p>
-        <div class="cta-row">
-          <a class="btn-primary" href="players.html">View Players</a>
-          <a class="btn-ghost" href="players.html#club-90">90's Club</a>
+    <main class="home-stage">
+      <aside class="home-rail home-rail-left" aria-labelledby="home-players-title">
+        <div class="home-panel-head">
+          <h3 id="home-players-title">Top Overall</h3>
+          <a href="players.html">All</a>
+        </div>
+        <div id="home-top-players"></div>
+      </aside>
+
+      <section class="home-center" aria-label="Rec Room Football Community">
+        <div class="home-plate">
+          <div class="home-plate-head">
+            <span>Season 11</span>
+            <span class="home-plate-rule" aria-hidden="true"></span>
+            <span>League Hub</span>
+          </div>
+
+          <div class="home-plate-brand">
+            <img class="home-hero-mark" src="assets/logo.png" alt="" />
+            <h1>Rec Room Football Community</h1>
+          </div>
+
+          <nav class="home-board" aria-label="League directory">
+            <a href="standings.html"><em>01</em><span>Standings</span></a>
+            <a href="schedule.html"><em>02</em><span>Schedule</span></a>
+            <a href="teams.html"><em>03</em><span>Teams</span></a>
+            <a href="players.html"><em>04</em><span>Players</span></a>
+            <a href="accolades.html"><em>05</em><span>Accolades</span></a>
+            <a href="history.html"><em>06</em><span>History</span></a>
+            <a
+              class="home-board-discord"
+              href="https://discord.gg/rrfc"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              Official Discord
+            </a>
+          </nav>
         </div>
       </section>
+
+      <aside class="home-rail home-rail-right" aria-label="Standings and power">
+        <div class="home-rail-stack">
+          <div class="home-rail-block">
+            <div class="home-panel-head">
+              <h3 id="home-standings-title">Standings</h3>
+              <a href="standings.html">All</a>
+            </div>
+            <div id="home-top-standings"></div>
+          </div>
+          <div class="home-rail-block">
+            <div class="home-panel-head">
+              <h3 id="home-power-title">Overall</h3>
+              <a href="teams.html">All</a>
+            </div>
+            <div id="home-top-teams"></div>
+          </div>
+        </div>
+      </aside>
     </main>
 
-    <footer class="site-footer">RRFC · Rec Room Football Community</footer>
+    <footer class="site-footer home-footer">RRFC · Rec Room Football Community</footer>
+    <script src="js/players-data.js"></script>
+    <script src="js/icons.js"></script>
+    <script src="js/teams-data.js"></script>
+    <script src="js/standings-data.js"></script>
     <script src="js/main.js"></script>
   </body>
 </html>

@@ -8,6 +8,9 @@
     return `<img class="team-logo-sm" src="${url}" alt="" width="24" height="24" onerror="this.classList.add('is-missing')" />`;
   };
 
+  const playerHtml =
+    window.RRFC_playerNameHtml || ((name) => String(name || ""));
+
   const order = ["rrfc", "rrfo", "rrfa"];
 
   root.innerHTML = order
@@ -30,7 +33,7 @@
           </div>
           <div class="chip-mvp">
             <span>Chip MVP</span>
-            <strong>${s.mvp}</strong>
+            <strong>${playerHtml(s.mvp, "player-ref")}</strong>
           </div>
         </article>`
         )
@@ -56,6 +59,9 @@
 (() => {
   const root = document.getElementById("accolades-root");
   if (!root || !window.RRFC_CHAMPIONSHIPS) return;
+
+  const playerHtml =
+    window.RRFC_playerNameHtml || ((name) => String(name || ""));
 
   const rrfc = window.RRFC_CHAMPIONSHIPS.rrfc || [];
   const latest = [...rrfc].sort((a, b) => b.season - a.season)[0];
@@ -85,7 +91,7 @@
           (key) => `
           <div class="award-pill">
             <span title="${awardLabels[key] || key}">${key}</span>
-            <strong>${season.awards[key]}</strong>
+            <strong>${playerHtml(season.awards[key], "player-ref")}</strong>
           </div>`
         )
         .join("");
@@ -116,7 +122,9 @@
 
       const topCount = ranked[0][1];
       const leaders = ranked.filter(([, count]) => count === topCount);
-      const names = leaders.map(([name]) => name).join(" · ");
+      const names = leaders
+        .map(([name]) => playerHtml(name, "player-ref"))
+        .join(" · ");
 
       return `
         <div class="mvp-row">
@@ -132,13 +140,13 @@
       ${
         latest
           ? `<p class="accolade-highlight">S${latest.season} · <strong>${latest.champion}</strong> def. ${latest.opponent}</p>
-             <p class="accolade-sub">Chip MVP: ${latest.mvp}</p>`
+             <p class="accolade-sub">Chip MVP: ${playerHtml(latest.mvp, "player-ref")}</p>`
           : `<p class="stub-note">No RRFC championships yet.</p>`
       }
     </section>
     <section class="accolade-block">
       <h2>Season Awards</h2>
-      <p class="accolade-sub">RRFC yearly awards by season.</p>
+      <p class="accolade-sub">RRFC yearly awards by season. Names link to matching player cards.</p>
       <div class="award-seasons">${seasonAwardsHtml}</div>
     </section>
     <section class="accolade-block leaders-block">
@@ -151,7 +159,7 @@
               .map(
                 ([name, count]) => `
               <div class="mvp-row">
-                <span>${name}</span>
+                <span>${playerHtml(name, "player-ref")}</span>
                 <strong>${count}</strong>
               </div>`
               )

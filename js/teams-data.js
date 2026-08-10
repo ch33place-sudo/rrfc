@@ -19,7 +19,15 @@ window.RRFC_TEAMS = [
   {
     name: "Oregon State Beavers",
     season: 11,
-    roster: [],
+    roster: [
+      "Kiwiz",
+      "Rev",
+      "Kazu",
+      "Minivip",
+      "Luigi",
+      "Genz",
+      "Pittman",
+    ],
     colors: { primary: "#DC4405", secondary: "#000000", accent: "#FF6A2A" },
   },
   {
@@ -90,13 +98,30 @@ window.RRFC_TEAMS = [
   {
     name: "Texas Longhorns",
     season: 11,
-    roster: [],
+    roster: [
+      "Dez",
+      "Error",
+      "ZK",
+      "Shehates",
+      "Noah",
+      "Lil DG",
+      "Kingdrip",
+      "Cyber",
+    ],
     colors: { primary: "#BF5700", secondary: "#FFFFFF", accent: "#E66A00" },
   },
   {
     name: "Missouri Tigers",
     season: 11,
-    roster: [],
+    roster: [
+      "Nadia",
+      "Pap",
+      "Mars",
+      "Deer",
+      "Pabyo",
+      "JT",
+      "Polo",
+    ],
     colors: { primary: "#F1B82D", secondary: "#000000", accent: "#F1B82D" },
   },
   {
@@ -161,11 +186,18 @@ window.RRFC_CHIP_CHAMPIONS = (() => {
 
 /** Colors for historic / non-S11 teams (player badges, etc.). */
 window.RRFC_HISTORIC_TEAM_COLORS = {
+  "Notre Dame Fighting Irish": { primary: "#0C2340", accent: "#C99700" },
+  "Texas Tech Red Raiders": { primary: "#CC0000", accent: "#000000" },
+  "Auburn Tigers": { primary: "#0C2340", accent: "#E87722" },
   "Oklahoma Sooners": { primary: "#841617", accent: "#C8102E" },
   "Oklahoma Sooner": { primary: "#841617", accent: "#C8102E" },
+  "Northern Illinois Huskies": { primary: "#BA0C2F", accent: "#000000" },
   "Rutgers Scarlett Knights": { primary: "#CC0033", accent: "#E31C3F" },
   "Rutgers Scarlet Knights": { primary: "#CC0033", accent: "#E31C3F" },
+  "New York Jets": { primary: "#125740", accent: "#FFFFFF" },
+  "Dallas Cowboys": { primary: "#041E42", accent: "#869397" },
   "Baltimore Huskies": { primary: "#5C2D91", accent: "#9B59B6" },
+  "Las Vegas Leviathans": { primary: "#1E4DB7", accent: "#4C7DFF" },
 };
 
 window.RRFC_colorsForTeamName = (teamName) => {

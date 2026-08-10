@@ -13,6 +13,142 @@
     return club ? club.label : `${clubId}'s Club`;
   };
 
+  const homePlayersRoot = document.getElementById("home-top-players");
+  const homeTeamsRoot = document.getElementById("home-top-teams");
+  const homeStandingsRoot = document.getElementById("home-top-standings");
+  if (homePlayersRoot || homeTeamsRoot || homeStandingsRoot) {
+    const bindThumbErrors = (root) => {
+      root.querySelectorAll("[data-home-thumb]").forEach((img) => {
+        img.addEventListener("error", () => {
+          const wrap = img.parentElement;
+          if (!wrap) return;
+          img.remove();
+          wrap.classList.add("fallback");
+          wrap.textContent = "RR";
+        });
+      });
+    };
+
+    const teamPower = (team) => {
+      const ovrs = (team.roster || [])
+        .map((name) => {
+          const player =
+            window.RRFC_findPlayerByName &&
+            window.RRFC_findPlayerByName(name);
+          return player && player.ovr != null ? Number(player.ovr) : null;
+        })
+        .filter((n) => Number.isFinite(n))
+        .sort((a, b) => b - a);
+      const top = ovrs.slice(0, 5);
+      if (!top.length) return null;
+      return Math.round(top.reduce((sum, n) => sum + n, 0) / top.length);
+    };
+
+    const findTeam = (name) =>
+      (window.RRFC_TEAMS || []).find(
+        (t) => t.name.toLowerCase() === String(name).toLowerCase()
+      ) || { name };
+
+    if (homePlayersRoot && window.RRFC_PLAYERS) {
+      const top = [...window.RRFC_PLAYERS]
+        .filter((p) => p.ovr != null)
+        .sort(
+          (a, b) =>
+            Number(b.ovr) - Number(a.ovr) ||
+            String(a.name).localeCompare(String(b.name))
+        )
+        .slice(0, 14);
+
+      homePlayersRoot.innerHTML = `
+        <div class="home-rank">
+          ${top
+            .map((p, i) => {
+              const icon = window.RRFCIcons
+                ? `<div class="thumb"><img src="${window.RRFCIcons.resolveUrl(p.name)}" alt="" data-home-thumb /></div>`
+                : `<div class="thumb fallback">RR</div>`;
+              return `
+                <a class="home-rank-row" href="player.html?name=${encodeURIComponent(p.name)}" style="animation-delay: ${Math.min(i * 0.03, 0.35)}s">
+                  <span class="rank">${i + 1}</span>
+                  ${icon}
+                  <div class="copy">
+                    <strong>${p.name}</strong>
+                    <span>${clubLabel(p.club)}</span>
+                  </div>
+                  <div class="stat">${p.ovr}<small>OVR</small></div>
+                </a>`;
+            })
+            .join("")}
+        </div>`;
+      bindThumbErrors(homePlayersRoot);
+    }
+
+    if (homeStandingsRoot && window.RRFC_STANDINGS) {
+      const ranked = [...window.RRFC_STANDINGS].slice(0, 7).map((s) => ({
+        team: findTeam(s.team),
+        record: s,
+      }));
+
+      homeStandingsRoot.innerHTML = `
+        <div class="home-rank">
+          ${ranked
+            .map((row, i) => {
+              const logo = window.RRFCMedia
+                ? `<div class="thumb"><img src="${window.RRFCMedia.resolveUrl("teams", row.team.name)}" alt="" data-home-thumb /></div>`
+                : `<div class="thumb fallback">TM</div>`;
+              const record = `${row.record.wins}-${row.record.losses}`;
+              return `
+                <a class="home-rank-row" href="team.html?name=${encodeURIComponent(row.team.name)}" style="animation-delay: ${Math.min(i * 0.03, 0.35)}s">
+                  <span class="rank">${i + 1}</span>
+                  ${logo}
+                  <div class="copy">
+                    <strong>${row.team.name}</strong>
+                    <span>Season 11</span>
+                  </div>
+                  <div class="stat">${record}<small>W-L</small></div>
+                </a>`;
+            })
+            .join("")}
+        </div>`;
+      bindThumbErrors(homeStandingsRoot);
+    }
+
+    if (homeTeamsRoot && window.RRFC_TEAMS) {
+      const ranked = window.RRFC_TEAMS.map((team) => ({
+        team,
+        power: teamPower(team),
+      }))
+        .filter((row) => row.power != null)
+        .sort(
+          (a, b) =>
+            b.power - a.power ||
+            String(a.team.name).localeCompare(String(b.team.name))
+        )
+        .slice(0, 7);
+
+      homeTeamsRoot.innerHTML = `
+        <div class="home-rank">
+          ${ranked
+            .map((row, i) => {
+              const logo = window.RRFCMedia
+                ? `<div class="thumb"><img src="${window.RRFCMedia.resolveUrl("teams", row.team.name)}" alt="" data-home-thumb /></div>`
+                : `<div class="thumb fallback">TM</div>`;
+              return `
+                <a class="home-rank-row" href="team.html?name=${encodeURIComponent(row.team.name)}" style="animation-delay: ${Math.min(i * 0.03, 0.35)}s">
+                  <span class="rank">${i + 1}</span>
+                  ${logo}
+                  <div class="copy">
+                    <strong>${row.team.name}</strong>
+                    <span>Team overall</span>
+                  </div>
+                  <div class="stat">${row.power}<small>AVG</small></div>
+                </a>`;
+            })
+            .join("")}
+        </div>`;
+      bindThumbErrors(homeTeamsRoot);
+    }
+  }
+
   const ovrChanged = (p) =>
     p && p.prevOvr != null && Number(p.prevOvr) !== Number(p.ovr);
 
@@ -104,7 +240,23 @@
 
     const badgesRoot = profileRoot.querySelector("[data-player-badges]");
     if (badgesRoot) {
-      const chips = Array.isArray(player.badges) ? player.badges : [];
+      const manual = Array.isArray(player.badges) ? player.badges : [];
+      const derived =
+        (window.RRFC_awardsForPlayer &&
+          window.RRFC_awardsForPlayer(player.name)) ||
+        [];
+      const seen = new Set(
+        manual.map((b) => String(b.label || "").toLowerCase())
+      );
+      const chips = [
+        ...manual,
+        ...derived.filter((b) => {
+          const key = String(b.label || "").toLowerCase();
+          if (seen.has(key)) return false;
+          seen.add(key);
+          return true;
+        }),
+      ];
       if (!chips.length) {
         badgesRoot.innerHTML = "";
         badgesRoot.hidden = true;
@@ -118,9 +270,11 @@
               {};
             const accent = colors.accent || colors.primary || "#f0c34a";
             const primary = colors.primary || accent;
-            const title = b.team
-              ? `${b.label} · ${b.team}`
-              : b.label || "Badge";
+            const title = b.title
+              ? b.title
+              : b.team
+                ? `${b.label} · ${b.team}`
+                : b.label || "Badge";
             return `
               <span
                 class="badge trophy"
