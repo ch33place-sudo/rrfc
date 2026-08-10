@@ -2,13 +2,23 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <meta http-equiv="refresh" content="0; url=media-editor.html" />
-    <title>Redirecting…</title>
+    <meta name="robots" content="noindex, nofollow" />
     <script>
-      location.replace("media-editor.html");
+      (() => {
+        const host = location.hostname;
+        const local =
+          location.protocol === "file:" ||
+          host === "localhost" ||
+          host === "127.0.0.1" ||
+          host === "[::1]";
+        if (!local) {
+          location.replace("index.html");
+          return;
+        }
+        location.replace("media-editor.html");
+      })();
     </script>
+    <title>Media Editor — RRFC</title>
   </head>
-  <body>
-    <p><a href="media-editor.html">Open Media Editor</a></p>
-  </body>
+  <body></body>
 </html>

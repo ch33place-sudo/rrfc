@@ -146,14 +146,12 @@
     </section>
     <section class="accolade-block">
       <h2>Season Awards</h2>
-      <p class="accolade-sub">RRFC yearly awards by season. Names link to matching player cards.</p>
       <div class="award-seasons">${seasonAwardsHtml}</div>
     </section>
     <section class="accolade-block leaders-block">
       <div class="leaders-grid">
         <div>
           <h2>Most Chip MVPs</h2>
-          <p class="accolade-sub">All leagues</p>
           <div class="mvp-leaderboard">
             ${topMvps
               .map(
@@ -165,11 +163,10 @@
               )
               .join("")}
           </div>
-          <p class="back-link"><a href="history.html">Full championship history →</a></p>
+          <p class="back-link"><a href="history.html">Championship history →</a></p>
         </div>
         <div>
           <h2>Most Awards by Position</h2>
-          <p class="accolade-sub">RRFC season awards</p>
           <div class="mvp-leaderboard">
             ${positionLeadersHtml}
           </div>

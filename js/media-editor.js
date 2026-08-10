@@ -66,11 +66,12 @@
     const bucket = bucketForTab();
     const connected = Boolean(folderHandles[bucket]);
     const path = FOLDER_LABELS[bucket];
+    if (!folderHint) return;
     if (connected) {
-      folderHint.textContent = `Connected to ${path}. New uploads save there automatically. Still commit + push in GitHub Desktop for the live site.`;
+      folderHint.textContent = path;
       saveFolderBtn.textContent = "Change folder…";
     } else {
-      folderHint.innerHTML = `First upload will ask you to choose <code>${path}</code>. After that, uploads save there automatically (Chrome/Edge, local only).`;
+      folderHint.textContent = path;
       saveFolderBtn.textContent = "Connect folder…";
     }
   };

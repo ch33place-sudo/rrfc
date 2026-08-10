@@ -510,7 +510,7 @@
     }
 
     if (!roster.length) {
-      rosterRoot.innerHTML = `<p class="stub-note">Roster not added yet. Send the player list and we’ll plug it in.</p>`;
+      rosterRoot.innerHTML = `<p class="stub-note">No roster yet</p>`;
     } else {
       rosterRoot.innerHTML = `
         <div class="roster-list">

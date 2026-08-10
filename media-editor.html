@@ -2,7 +2,21 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
+    <script>
+      (() => {
+        const host = location.hostname;
+        const local =
+          location.protocol === "file:" ||
+          host === "localhost" ||
+          host === "127.0.0.1" ||
+          host === "[::1]";
+        if (!local) {
+          location.replace("index.html");
+        }
+      })();
+    </script>
     <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="robots" content="noindex, nofollow" />
     <title>Media Editor — RRFC</title>
     <link rel="icon" href="assets/logo.png" type="image/png" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -35,11 +49,6 @@
 
     <main class="editor-main">
       <h1 class="page-title">Media Editor</h1>
-      <p class="stub-note">
-        Upload player icons, Season 11 team logos, historic chip-winner logos, and the site logo.
-        Changes show in this browser right away. Use “Save to folder…” so files go into
-        <code>assets/</code> before you push to GitHub.
-      </p>
 
       <div class="editor-tabs" role="tablist">
         <button type="button" class="editor-tab active" data-tab="teams">Team Logos</button>
@@ -51,7 +60,7 @@
       <div class="editor-toolbar" id="editor-toolbar">
         <label class="editor-search">
           <span>Search</span>
-          <input id="media-search" type="search" placeholder="Type a name..." />
+          <input id="media-search" type="search" placeholder="Name" />
         </label>
         <label class="editor-filter" id="player-club-wrap" hidden>
           <span>Club</span>
@@ -67,10 +76,7 @@
 
       <div class="editor-actions">
         <button type="button" class="btn-ghost" id="save-folder-btn">Connect folder…</button>
-        <p class="editor-hint" id="folder-hint">
-          First upload will ask you to choose <code>assets/teams</code> (or players/assets). After
-          that, uploads save there automatically. Still push with GitHub Desktop for the live site.
-        </p>
+        <p class="editor-hint" id="folder-hint"></p>
       </div>
 
       <div id="media-editor-root" class="icon-editor-grid"></div>

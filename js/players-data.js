@@ -29,7 +29,7 @@ window.RRFC_PLAYERS = [
   { name: "Bilxa", ovr: 88, club: "80" },
   { name: "Yang", ovr: 88, club: "80" },
   { name: "Bearvr", ovr: 88, club: "80", aliases: ["Bear"] },
-  { name: "Bensimmons", ovr: 88, club: "80" },
+  { name: "Bensimmons", ovr: 88, club: "80", aliases: ["Ben"] },
   { name: "Nao", ovr: 87, club: "80" },
   { name: "Mood", ovr: 87, club: "80" },
   { name: "Minivip", ovr: 86, club: "80" },
